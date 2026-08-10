@@ -1,0 +1,66 @@
+@media (max-width: 900px) {
+  .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .admin-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  body { padding-bottom: 72px; }
+  .topbar { min-height: 62px; padding: 0 16px; }
+  .top-actions .muted { display: none; }
+  .top-actions .secondary-button { min-height: 38px; padding: 0 11px; }
+  .top-actions .primary-button { display: none; }
+
+  .container { width: min(100% - 28px, 560px); padding: 28px 0 40px; }
+  .hero { align-items: center; margin-bottom: 22px; }
+  .hero h1 { font-size: 2rem; }
+  .summary-card { padding: 10px 13px; }
+  .summary-card strong { font-size: 1.3rem; }
+
+  .toolbar { grid-template-columns: 1fr; }
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .product-info { padding: 12px; }
+  .product-meta { display: block; }
+  .product-meta .stock { display: block; margin-top: 3px; }
+
+  .random-options, .random-results { grid-template-columns: 1fr; }
+  .dialog-header { padding: 18px 18px 8px; }
+  .random-options, .random-results { padding-left: 18px; padding-right: 18px; }
+  .dialog > .full-width { width: calc(100% - 36px); margin-left: 18px; margin-right: 18px; }
+
+  .two-col { grid-template-columns: 1fr; }
+  .panel { padding: 17px; }
+
+  .mobile-nav {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 58px;
+    padding: 6px;
+    background: rgba(255,255,255,.94);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(20,30,45,.14);
+    backdrop-filter: blur(14px);
+  }
+  .mobile-nav a {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 2px;
+    border-radius: 13px;
+    color: var(--muted);
+    font-size: .78rem;
+  }
+  .mobile-nav a span { font-size: 1.15rem; }
+  .mobile-nav a.active { background: #e9efff; color: var(--primary); font-weight: 750; }
+}
+
+@media (max-width: 420px) {
+  .product-grid { gap: 10px; }
+  .product-name { font-size: .94rem; }
+  .tag { font-size: .72rem; padding: 3px 7px; }
+}

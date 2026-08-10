@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <title>管理商品｜倉管系統</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">W</span><span>倉管系統</span></a>
+    <div class="top-actions">
+      <span id="adminEmail" class="muted"></span>
+      <button id="logoutButton" class="secondary-button" type="button">登出</button>
+    </div>
+  </header>
+
+  <main class="container admin-container">
+    <section class="hero compact">
+      <div>
+        <p class="eyebrow">ADMIN PANEL</p>
+        <h1>商品管理</h1>
+        <p class="muted">第一版先完成商品新增、圖片上傳、庫存與標籤。</p>
+      </div>
+    </section>
+
+    <section class="admin-layout">
+      <form id="productForm" class="panel form-stack">
+        <div class="panel-heading">
+          <div><h2>新增商品</h2><p class="muted">手機也可以直接選照片上傳。</p></div>
+        </div>
+        <label>商品名稱
+          <input id="productName" type="text" required placeholder="例如：白色資料夾">
+        </label>
+        <div class="two-col">
+          <label>分類
+            <input id="productCategory" type="text" value="輔銷品" required>
+          </label>
+          <label>細分類
+            <input id="productSubcategory" type="text" value="資料夾" required>
+          </label>
+        </div>
+        <div class="two-col">
+          <label>單位
+            <input id="productUnit" type="text" value="個" required>
+          </label>
+          <label>初始庫存
+            <input id="productStock" type="number" min="0" step="1" value="0" required>
+          </label>
+        </div>
+        <label>標籤
+          <input id="productTags" type="text" placeholder="例如：#白（多個以逗號分隔）">
+        </label>
+        <label>商品圖片
+          <input id="productImage" type="file" accept="image/*">
+        </label>
+        <div id="imagePreview" class="image-preview"><span>尚未選擇圖片</span></div>
+        <button class="primary-button full-width" type="submit">＋ 新增商品</button>
+        <p id="formMessage" class="form-message" role="alert"></p>
+      </form>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div><h2>目前商品</h2><p id="adminProductCount" class="muted">載入中...</p></div>
+        </div>
+        <div id="adminProductList" class="admin-product-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <nav class="mobile-nav" aria-label="主要導覽">
+    <a href="index.html"><span>⌂</span>商品</a>
+    <a class="active" href="admin.html"><span>▦</span>管理</a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
