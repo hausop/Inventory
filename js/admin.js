@@ -332,7 +332,6 @@ async function createProduct(event) {
       supplier,
       purchase_quantity: purchaseQuantity,
       purchase_total: purchaseTotal,
-      cost
     };
 
 
