@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#f6f7f9"
+  >
+
+  <meta
+    name="description"
+    content="商品詳細資料與庫存紀錄"
+  >
+
+  <link
+    rel="icon"
+    href="assets/icon.svg"
+    type="image/svg+xml"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/responsive.css"
+  >
+
+  <title>商品詳細｜倉管系統</title>
+</head>
+
+
+<body>
+
+  <header class="topbar">
+
+    <a
+      class="brand"
+      href="index.html"
+      aria-label="倉管系統首頁"
+    >
+      <span class="brand-mark">W</span>
+      <span>倉管系統</span>
+    </a>
+
+    <div class="top-actions">
+
+      <a
+        class="secondary-button"
+        href="index.html"
+      >
+        ← 商品
+      </a>
+
+      <a
+        class="icon-button"
+        href="admin.html"
+        title="管理員"
+      >
+        ⚙
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <main class="container product-detail-container">
+
+    <!-- 載入狀態 -->
+
+    <section
+      id="productLoading"
+      class="panel"
+    >
+      <p class="muted">
+        商品資料載入中...
+      </p>
+    </section>
+
+
+    <!-- 錯誤狀態 -->
+
+    <section
+      id="productError"
+      class="panel hidden"
+    >
+      <h2>找不到商品</h2>
+
+      <p
+        id="productErrorMessage"
+        class="muted"
+      >
+        無法載入商品資料。
+      </p>
+
+      <a
+        class="primary-button"
+        href="index.html"
+      >
+        返回商品列表
+      </a>
+
+    </section>
+
+
+    <!-- 商品內容 -->
+
+    <div
+      id="productContent"
+      class="hidden"
+    >
+
+      <!-- 商品基本資料 -->
+
+      <section class="product-detail-hero">
+
+        <div class="product-detail-image">
+
+          <img
+            id="productImage"
+            src="assets/product-placeholder.svg"
+            alt=""
+          >
+
+        </div>
+
+
+        <div class="product-detail-info">
+
+          <p
+            id="productCategory"
+            class="eyebrow"
+          >
+            商品
+          </p>
+
+          <h1 id="productName">
+            —
+          </h1>
+
+          <p
+            id="productSubcategory"
+            class="muted"
+          >
+            —
+          </p>
+
+
+          <div class="product-detail-stock">
+
+            <span class="muted">
+              目前庫存
+            </span>
+
+            <strong id="productStock">
+              —
+            </strong>
+
+            <span id="productUnit">
+              —
+            </span>
+
+          </div>
+
+
+          <div
+            id="productTags"
+            class="product-tags"
+          >
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- 操作區 -->
+
+      <section class="panel">
+
+        <div class="panel-heading">
+
+          <div>
+
+            <h2>
+              商品操作
+            </h2>
+
+            <p class="muted">
+              商品修改、入庫與出庫功能將在下一階段加入。
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="product-actions">
+
+          <button
+            class="secondary-button"
+            type="button"
+            disabled
+          >
+            修改商品
+          </button>
+
+          <button
+            class="primary-button"
+            type="button"
+            disabled
+          >
+            ＋ 入庫
+          </button>
+
+          <button
+            class="danger-button"
+            type="button"
+            disabled
+          >
+            − 出庫
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- 採購紀錄 -->
+
+      <section class="panel">
+
+        <div class="panel-heading">
+
+          <div>
+
+            <h2>
+              採購紀錄
+            </h2>
+
+            <p
+              id="purchaseCount"
+              class="muted"
+            >
+              載入中...
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="purchaseList"
+          class="record-list"
+        >
+        </div>
+
+      </section>
+
+
+      <!-- 庫存異動 -->
+
+      <section class="panel">
+
+        <div class="panel-heading">
+
+          <div>
+
+            <h2>
+              庫存異動紀錄
+            </h2>
+
+            <p
+              id="inventoryLogCount"
+              class="muted"
+            >
+              載入中...
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="inventoryLogList"
+          class="record-list"
+        >
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <nav
+    class="mobile-nav"
+    aria-label="主要導覽"
+  >
+
+    <a
+      href="index.html"
+    >
+      <span>⌂</span>
+      首頁
+    </a>
+
+    <a
+      href="admin.html"
+    >
+      <span>▦</span>
+      管理
+    </a>
+
+  </nav>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/config.js"></script>
+
+  <script src="js/supabase.js"></script>
+
+  <script src="js/products.js"></script>
+
+  <script src="js/product.js"></script>
+
+</body>
+
+</html>
