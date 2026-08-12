@@ -403,27 +403,87 @@ async function deleteProduct(id) {
 
   if (
     !confirm(
-      "確定要刪除這個商品嗎？第一版會直接將商品設為停用，不會刪除歷史 Log。"
+      "確定要刪除？"
     )
   ) {
     return;
   }
 
+  try {
 
-  const { error } =
-    await supabaseClient
-      .from("products")
-      .update({
-        is_active: false
-      })
-      .eq("id", id);
+    /*
+     * 先確認目前仍然是管理員
+     */
+    const {
+      data: { user },
+      error: userError
+    } = await supabaseClient.auth.getUser();
+
+    if (userError) {
+      throw userError;
+    }
+
+    if (!user) {
+      throw new Error("登入狀態已失效，請重新登入。");
+    }
 
 
-  if (error) {
+    /*
+     * 取得商品目前相關資料
+     *
+     * 這裡先把採購紀錄與庫存紀錄找出來，
+     * 確認刪除流程。
+     */
+    const { error: purchaseError } =
+      await supabaseClient
+        .from("purchases")
+        .delete()
+        .eq("product_id", id);
+
+    if (purchaseError) {
+      throw purchaseError;
+    }
+
+
+    /*
+     * 刪除所有出入庫紀錄
+     */
+    const { error: inventoryError } =
+      await supabaseClient
+        .from("inventory_logs")
+        .delete()
+        .eq("product_id", id);
+
+    if (inventoryError) {
+      throw inventoryError;
+    }
+
+
+    /*
+     * 最後才刪除商品本身
+     */
+    const { error: productError } =
+      await supabaseClient
+        .from("products")
+        .delete()
+        .eq("id", id);
+
+    if (productError) {
+      throw productError;
+    }
+
+
+    /*
+     * 完成
+     */
+    alert("商品已刪除。");
+
+    await loadAdminProducts();
+
+  } catch (error) {
+
+    console.error("deleteProduct error:", error);
+
     alert(`刪除失敗：${error.message}`);
-    return;
   }
-
-
-  await loadAdminProducts();
 }
