@@ -322,28 +322,31 @@ async function createProduct(event) {
 
 
     /*
-     * 建立第一筆採購歷史
-     *
-     * 舊資料永遠保留。
-     * 未來再次採購時會新增另一筆 purchases。
-     */
-    const purchasePayload = {
-      product_id: insertedProduct.id,
-      supplier,
-      purchase_quantity: purchaseQuantity,
-      purchase_total: purchaseTotal,
-    };
+ * 建立第一筆採購歷史
+ *
+ * 舊資料永遠保留。
+ * 未來再次採購時會新增另一筆 purchases。
+ *
+ * cost 不在這裡寫入，
+ * 因為 Supabase 的 purchases.cost 是資料庫自動計算欄位。
+ */
+const purchasePayload = {
+  product_id: insertedProduct.id,
+  supplier,
+  purchase_quantity: purchaseQuantity,
+  purchase_total: purchaseTotal
+};
 
 
-    const {
-      error: purchaseError
-    } = await supabaseClient
-      .from("purchases")
-      .insert(purchasePayload);
+const {
+  error: purchaseError
+} = await supabaseClient
+  .from("purchases")
+  .insert(purchasePayload);
 
-    if (purchaseError) {
-      throw purchaseError;
-    }
+if (purchaseError) {
+  throw purchaseError;
+}
 
 
     /*
