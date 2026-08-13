@@ -569,34 +569,143 @@ h3 { margin: 0; }
 
 @media (max-width: 700px) {
 
+  /* ------------------------------------------
+     編輯視窗本體
+     ------------------------------------------ */
+
   #editProductDialog {
     width: calc(100vw - 24px);
+    max-width: none;
+
     max-height: calc(100dvh - 24px);
+
+    margin: auto;
 
     border-radius: 18px;
   }
 
+
+  /* ------------------------------------------
+     標題區
+     ------------------------------------------ */
+
   #editProductDialog .dialog-header {
-    padding: 20px 20px 16px;
+    padding: 18px 18px 15px;
+
+    gap: 12px;
   }
 
-  #editProductDialog .edit-product-form {
-    gap: 16px;
-    padding: 20px;
+  #editProductDialog .dialog-header h2 {
+    font-size: 1.15rem;
   }
+
+  #editProductDialog .dialog-header .eyebrow {
+    font-size: .68rem;
+    letter-spacing: .14em;
+  }
+
+  #editProductDialog .dialog-header .icon-button {
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+    min-height: 38px;
+
+    border-radius: 11px;
+  }
+
+
+  /* ------------------------------------------
+     表單
+     ------------------------------------------ */
+
+  #editProductDialog .edit-product-form {
+    gap: 15px;
+
+    padding: 18px;
+  }
+
+
+  /* ------------------------------------------
+     Label
+     ------------------------------------------ */
+
+  #editProductDialog .edit-product-form label {
+    gap: 6px;
+
+    font-size: .86rem;
+  }
+
+
+  /* ------------------------------------------
+     輸入欄位
+     ------------------------------------------ */
+
+  #editProductDialog .edit-product-form input {
+    min-height: 46px;
+
+    padding: 0 12px;
+
+    border-radius: 11px;
+
+    font-size: 16px;
+  }
+
+
+  /* ------------------------------------------
+     分類 / 細分類
+     手機改成上下排列
+     ------------------------------------------ */
 
   #editProductDialog .form-grid-2 {
     grid-template-columns: 1fr;
-    gap: 16px;
+
+    gap: 15px;
   }
+
+
+  /* ------------------------------------------
+     提示文字
+     ------------------------------------------ */
+
+  #editProductDialog .form-hint {
+    margin-top: -3px;
+
+    font-size: .76rem;
+    line-height: 1.45;
+  }
+
+
+  /* ------------------------------------------
+     錯誤訊息
+     ------------------------------------------ */
+
+  #editProductDialog .form-error {
+    padding: 10px 12px;
+
+    font-size: .8rem;
+  }
+
+
+  /* ------------------------------------------
+     底部操作區
+     ------------------------------------------ */
 
   #editProductDialog .form-actions {
     flex-direction: column-reverse;
     align-items: stretch;
+
+    gap: 8px;
+
+    margin-top: 2px;
+    padding-top: 15px;
   }
+
 
   #editProductDialog .form-actions button {
     width: 100%;
+
+    min-height: 44px;
   }
 
 }
