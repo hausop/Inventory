@@ -260,3 +260,133 @@ h3 { margin: 0; }
 .text-link { display: inline-block; margin-top: 16px; color: var(--primary); font-weight: 700; }
 
 .mobile-nav { display: none; }
+
+/* ==========================================
+   商品編輯表單
+   ========================================== */
+
+.edit-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+
+.edit-product-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  font-weight: 600;
+}
+
+
+.edit-product-form input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  border: 1px solid #d9dee7;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #1f2937;
+
+  font: inherit;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+.edit-product-form input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.12);
+}
+
+
+.form-grid-2 {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+
+.form-hint {
+  font-size: 13px;
+
+  font-weight: 400;
+
+  color: #6b7280;
+}
+
+
+.form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding-top: 6px;
+}
+
+
+.form-error {
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+}
+
+
+/* 桌面版修改視窗 */
+#editProductDialog {
+  width: min(
+    620px,
+    calc(100vw - 32px)
+  );
+
+  max-height:
+    calc(100dvh - 32px);
+
+  overflow-y: auto;
+}
+
+
+/* 手機版 */
+@media (max-width: 700px) {
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+
+  .form-actions button {
+    width: 100%;
+  }
+
+}
