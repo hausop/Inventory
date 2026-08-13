@@ -468,60 +468,25 @@ function renderInventoryLogs(logs) {
 
 /*
  * ==========================================
- * 修改商品
+ * 商品原地編輯（Inline Edit）
  * ==========================================
  */
 
+let isEditMode = false;
+
 
 /*
- * 綁定修改商品相關事件
+ * 綁定商品編輯事件
  */
 function setupEditProductEvents() {
 
   const editButton =
-    document.querySelector(
-      "#editProductButton"
-    );
+    document.querySelector("#editProductButton");
 
-
-  const dialog =
-    document.querySelector(
-      "#editProductDialog"
-    );
-
-
-  const closeButton =
-    document.querySelector(
-      "#closeEditProductButton"
-    );
-
-
-  const cancelButton =
-    document.querySelector(
-      "#cancelEditProductButton"
-    );
-
-
-  const form =
-    document.querySelector(
-      "#editProductForm"
-    );
-
-
-  if (
-    !editButton ||
-    !dialog ||
-    !closeButton ||
-    !cancelButton ||
-    !form
-  ) {
+  if (!editButton) {
     return;
   }
 
-
-  /*
-   * 開啟修改視窗
-   */
   editButton.addEventListener(
     "click",
     () => {
@@ -530,120 +495,286 @@ function setupEditProductEvents() {
         return;
       }
 
-
-      fillEditProductForm();
-
-
-      clearEditProductError();
-
-
-      dialog.showModal();
-    }
-  );
-
-
-  /*
-   * 關閉
-   */
-  closeButton.addEventListener(
-    "click",
-    () => {
-      dialog.close();
-    }
-  );
-
-
-  cancelButton.addEventListener(
-    "click",
-    () => {
-      dialog.close();
-    }
-  );
-
-
-  /*
-   * 點擊 dialog 外部關閉
-   */
-  dialog.addEventListener(
-    "click",
-    event => {
-
-      if (
-        event.target === dialog
-      ) {
-        dialog.close();
+      if (isEditMode) {
+        return;
       }
 
+      enterEditMode();
     }
-  );
-
-
-  /*
-   * 儲存
-   */
-  form.addEventListener(
-    "submit",
-    handleEditProductSubmit
   );
 }
 
 
 /*
- * 將目前商品資料填入表單
+ * 進入編輯模式
  */
-function fillEditProductForm() {
+function enterEditMode() {
+
+  if (!currentProduct || isEditMode) {
+    return;
+  }
+
+  isEditMode = true;
+
+  const nameElement =
+    document.querySelector("#productName");
+
+  const categoryElement =
+    document.querySelector("#productCategory");
+
+  const subcategoryElement =
+    document.querySelector("#productSubcategory");
+
+  const unitElement =
+    document.querySelector("#productUnit");
+
+  const tagsElement =
+    document.querySelector("#productTags");
+
+  const editButton =
+    document.querySelector("#editProductButton");
+
+  if (
+    !nameElement ||
+    !categoryElement ||
+    !subcategoryElement ||
+    !unitElement ||
+    !tagsElement ||
+    !editButton
+  ) {
+    return;
+  }
+
+
+  /*
+   * 商品名稱
+   */
+  nameElement.innerHTML = `
+    <input
+      id="inlineProductName"
+      class="inline-edit-input inline-edit-name"
+      type="text"
+      value="${escapeHtml(currentProduct.name || "")}"
+    >
+  `;
+
+
+  /*
+   * 分類
+   */
+  categoryElement.innerHTML = `
+    <input
+      id="inlineProductCategory"
+      class="inline-edit-input inline-edit-category"
+      type="text"
+      value="${escapeHtml(currentProduct.category || "")}"
+    >
+  `;
+
+
+  /*
+   * 細分類
+   */
+  subcategoryElement.innerHTML = `
+    <input
+      id="inlineProductSubcategory"
+      class="inline-edit-input"
+      type="text"
+      value="${escapeHtml(currentProduct.subcategory || "")}"
+    >
+  `;
+
+
+  /*
+   * 單位
+   *
+   * 保留目前「目前庫存」的結構，
+   * 只讓單位可以修改。
+   */
+  unitElement.innerHTML = `
+    <input
+      id="inlineProductUnit"
+      class="inline-edit-input inline-edit-unit"
+      type="text"
+      value="${escapeHtml(currentProduct.unit || "")}"
+    >
+  `;
+
+
+  /*
+   * 標籤
+   */
+  tagsElement.innerHTML = `
+    <input
+      id="inlineProductTags"
+      class="inline-edit-input inline-edit-tags"
+      type="text"
+      value="${escapeHtml(
+        normalizeTags(currentProduct.tags).join(", ")
+      )}"
+    >
+    <small class="inline-edit-help">
+      多個標籤請使用逗號分隔
+    </small>
+  `;
+
+
+  /*
+   * 在商品圖片下方加入圖片網址編輯欄位
+   */
+  const imageContainer =
+    document.querySelector(".product-detail-image");
+
+  if (imageContainer) {
+
+    const existing =
+      document.querySelector("#inlineImageUrlWrapper");
+
+    if (!existing) {
+
+      imageContainer.insertAdjacentHTML(
+        "afterend",
+        `
+          <div
+            id="inlineImageUrlWrapper"
+            class="inline-image-url"
+          >
+            <label for="inlineProductImageUrl">
+              商品圖片網址
+            </label>
+
+            <input
+              id="inlineProductImageUrl"
+              class="inline-edit-input"
+              type="url"
+              placeholder="https://..."
+              value="${escapeHtml(
+                currentProduct.image_url || ""
+              )}"
+            >
+          </div>
+        `
+      );
+
+    }
+
+  }
+
+
+  /*
+   * 將原本「修改商品」按鈕改成：
+   *
+   * 取消
+   * 儲存修改
+   */
+  editButton.outerHTML = `
+    <div
+      id="inlineEditActions"
+      class="inline-edit-actions"
+    >
+
+      <button
+        id="cancelInlineEditButton"
+        class="secondary-button"
+        type="button"
+      >
+        取消
+      </button>
+
+      <button
+        id="saveInlineEditButton"
+        class="primary-button"
+        type="button"
+      >
+        儲存修改
+      </button>
+
+    </div>
+  `;
+
+
+  /*
+   * 綁定取消
+   */
+  document
+    .querySelector("#cancelInlineEditButton")
+    ?.addEventListener(
+      "click",
+      exitEditMode
+    );
+
+
+  /*
+   * 綁定儲存
+   */
+  document
+    .querySelector("#saveInlineEditButton")
+    ?.addEventListener(
+      "click",
+      saveInlineEdit
+    );
+
+
+  /*
+   * 自動聚焦商品名稱
+   */
+  document
+    .querySelector("#inlineProductName")
+    ?.focus();
+}
+
+
+/*
+ * 離開編輯模式
+ */
+function exitEditMode() {
 
   if (!currentProduct) {
     return;
   }
 
+  isEditMode = false;
 
+  /*
+   * 恢復正常商品顯示
+   */
+  renderProductDetail(currentProduct);
+
+  /*
+   * 恢復修改按鈕
+   */
+  const actions =
+    document.querySelector("#inlineEditActions");
+
+  if (actions) {
+
+    actions.outerHTML = `
+      <button
+        id="editProductButton"
+        class="secondary-button"
+        type="button"
+      >
+        修改商品
+      </button>
+    `;
+
+    setupEditProductEvents();
+  }
+
+
+  /*
+   * 移除圖片網址欄位
+   */
   document
-    .querySelector("#editProductName")
-    .value =
-      currentProduct.name || "";
-
-
-  document
-    .querySelector("#editProductCategory")
-    .value =
-      currentProduct.category || "";
-
-
-  document
-    .querySelector("#editProductSubcategory")
-    .value =
-      currentProduct.subcategory || "";
-
-
-  document
-    .querySelector("#editProductUnit")
-    .value =
-      currentProduct.unit || "";
-
-
-  document
-    .querySelector("#editProductTags")
-    .value =
-      normalizeTags(
-        currentProduct.tags
-      ).join(", ");
-
-
-  document
-    .querySelector("#editProductImageUrl")
-    .value =
-      currentProduct.image_url || "";
+    .querySelector("#inlineImageUrlWrapper")
+    ?.remove();
 }
 
 
 /*
- * 儲存商品修改
+ * 儲存原地編輯
  */
-async function handleEditProductSubmit(event) {
-
-  event.preventDefault();
-
+async function saveInlineEdit() {
 
   if (!currentProduct) {
     return;
@@ -652,52 +783,52 @@ async function handleEditProductSubmit(event) {
 
   const saveButton =
     document.querySelector(
-      "#saveEditProductButton"
+      "#saveInlineEditButton"
     );
 
 
-  clearEditProductError();
-
-
+  /*
+   * 取得輸入內容
+   */
   const name =
     document
-      .querySelector("#editProductName")
-      .value
+      .querySelector("#inlineProductName")
+      ?.value
       .trim();
 
 
   const category =
     document
-      .querySelector("#editProductCategory")
-      .value
+      .querySelector("#inlineProductCategory")
+      ?.value
       .trim();
 
 
   const subcategory =
     document
-      .querySelector("#editProductSubcategory")
-      .value
+      .querySelector("#inlineProductSubcategory")
+      ?.value
       .trim();
 
 
   const unit =
     document
-      .querySelector("#editProductUnit")
-      .value
+      .querySelector("#inlineProductUnit")
+      ?.value
       .trim();
 
 
   const tagsText =
     document
-      .querySelector("#editProductTags")
-      .value
+      .querySelector("#inlineProductTags")
+      ?.value
       .trim();
 
 
   const imageUrl =
     document
-      .querySelector("#editProductImageUrl")
-      .value
+      .querySelector("#inlineProductImageUrl")
+      ?.value
       .trim();
 
 
@@ -705,33 +836,25 @@ async function handleEditProductSubmit(event) {
    * 基本驗證
    */
   if (!name) {
-    showEditProductError(
-      "請輸入商品名稱。"
-    );
+    alert("請輸入商品名稱。");
     return;
   }
 
 
   if (!category) {
-    showEditProductError(
-      "請輸入商品分類。"
-    );
+    alert("請輸入商品分類。");
     return;
   }
 
 
   if (!subcategory) {
-    showEditProductError(
-      "請輸入商品細分類。"
-    );
+    alert("請輸入商品細分類。");
     return;
   }
 
 
   if (!unit) {
-    showEditProductError(
-      "請輸入商品單位。"
-    );
+    alert("請輸入商品單位。");
     return;
   }
 
@@ -751,8 +874,12 @@ async function handleEditProductSubmit(event) {
   /*
    * 防止重複送出
    */
-  saveButton.disabled = true;
-  saveButton.textContent = "儲存中...";
+  if (saveButton) {
+
+    saveButton.disabled = true;
+    saveButton.textContent = "儲存中...";
+
+  }
 
 
   try {
@@ -797,6 +924,12 @@ async function handleEditProductSubmit(event) {
 
 
     /*
+     * 離開編輯模式
+     */
+    isEditMode = false;
+
+
+    /*
      * 重新顯示商品
      */
     renderProductDetail(
@@ -805,18 +938,41 @@ async function handleEditProductSubmit(event) {
 
 
     /*
-     * 關閉視窗
+     * 移除圖片網址編輯欄位
      */
     document
       .querySelector(
-        "#editProductDialog"
+        "#inlineImageUrlWrapper"
       )
-      .close();
+      ?.remove();
 
 
     /*
-     * 提示成功
+     * 恢復修改按鈕
      */
+    const actions =
+      document.querySelector(
+        "#inlineEditActions"
+      );
+
+
+    if (actions) {
+
+      actions.outerHTML = `
+        <button
+          id="editProductButton"
+          class="secondary-button"
+          type="button"
+        >
+          修改商品
+        </button>
+      `;
+
+      setupEditProductEvents();
+
+    }
+
+
     alert("商品資料已更新。");
 
 
@@ -828,66 +984,23 @@ async function handleEditProductSubmit(event) {
     );
 
 
-    showEditProductError(
+    alert(
       error.message ||
       "商品修改失敗，請稍後再試。"
     );
 
+
   } finally {
 
-    saveButton.disabled = false;
-    saveButton.textContent = "儲存修改";
+    if (saveButton) {
+
+      saveButton.disabled = false;
+      saveButton.textContent = "儲存修改";
+
+    }
 
   }
 
-}
-
-
-/*
- * 顯示修改錯誤
- */
-function showEditProductError(
-  message
-) {
-
-  const errorBox =
-    document.querySelector(
-      "#editProductError"
-    );
-
-
-  errorBox.textContent =
-    message;
-
-
-  errorBox.classList.remove(
-    "hidden"
-  );
-}
-
-
-/*
- * 清除修改錯誤
- */
-function clearEditProductError() {
-
-  const errorBox =
-    document.querySelector(
-      "#editProductError"
-    );
-
-
-  if (!errorBox) {
-    return;
-  }
-
-
-  errorBox.textContent = "";
-
-
-  errorBox.classList.add(
-    "hidden"
-  );
 }
 
 
