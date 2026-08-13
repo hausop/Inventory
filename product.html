@@ -188,52 +188,52 @@
 
       <section class="panel">
 
-        <div class="panel-heading">
+  <div class="panel-heading">
 
-          <div>
+    <div>
 
-            <h2>
-              商品操作
-            </h2>
+      <h2>
+        商品操作
+      </h2>
 
-            <p class="muted">
-              商品修改、入庫與出庫功能將在下一階段加入。
-            </p>
+      <p class="muted">
+        修改商品資料，或進行後續庫存操作。
+      </p>
 
-          </div>
+    </div>
 
-        </div>
+  </div>
 
 
-        <div class="product-actions">
+  <div class="product-actions">
 
-          <button
-            class="secondary-button"
-            type="button"
-            disabled
-          >
-            修改商品
-          </button>
+    <button
+      id="editProductButton"
+      class="secondary-button"
+      type="button"
+    >
+      修改商品
+    </button>
 
-          <button
-            class="primary-button"
-            type="button"
-            disabled
-          >
-            ＋ 入庫
-          </button>
+    <button
+      class="primary-button"
+      type="button"
+      disabled
+    >
+      ＋ 入庫
+    </button>
 
-          <button
-            class="danger-button"
-            type="button"
-            disabled
-          >
-            − 出庫
-          </button>
+    <button
+      class="danger-button"
+      type="button"
+      disabled
+    >
+      − 出庫
+    </button>
 
-        </div>
+  </div>
 
-      </section>
+</section>
 
 
       <!-- 採購紀錄 -->
@@ -304,6 +304,159 @@
     </div>
 
   </main>
+
+    <!-- 修改商品視窗 -->
+
+  <dialog
+    id="editProductDialog"
+    class="dialog"
+  >
+
+    <div class="dialog-header">
+
+      <div>
+
+        <p class="eyebrow">
+          EDIT PRODUCT
+        </p>
+
+        <h2>
+          修改商品
+        </h2>
+
+      </div>
+
+      <button
+        class="icon-button"
+        id="closeEditProductButton"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form
+      id="editProductForm"
+      class="edit-product-form"
+    >
+
+      <label>
+        商品名稱
+
+        <input
+          id="editProductName"
+          name="name"
+          type="text"
+          required
+        >
+
+      </label>
+
+
+      <div class="form-grid-2">
+
+        <label>
+          分類
+
+          <input
+            id="editProductCategory"
+            name="category"
+            type="text"
+            required
+          >
+
+        </label>
+
+
+        <label>
+          細分類
+
+          <input
+            id="editProductSubcategory"
+            name="subcategory"
+            type="text"
+            required
+          >
+
+        </label>
+
+      </div>
+
+
+      <label>
+        單位
+
+        <input
+          id="editProductUnit"
+          name="unit"
+          type="text"
+          required
+        >
+
+      </label>
+
+
+      <label>
+        標籤
+
+        <input
+          id="editProductTags"
+          name="tags"
+          type="text"
+          placeholder="例如：辦公用品, 常用品"
+        >
+
+        <span class="form-hint">
+          多個標籤請使用逗號分隔。
+        </span>
+
+      </label>
+
+
+      <label>
+        商品圖片網址
+
+        <input
+          id="editProductImageUrl"
+          name="image_url"
+          type="url"
+          placeholder="https://..."
+        >
+
+      </label>
+
+
+      <div
+        id="editProductError"
+        class="form-error hidden"
+      ></div>
+
+
+      <div class="form-actions">
+
+        <button
+          id="cancelEditProductButton"
+          class="secondary-button"
+          type="button"
+        >
+          取消
+        </button>
+
+        <button
+          id="saveEditProductButton"
+          class="primary-button"
+          type="submit"
+        >
+          儲存修改
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
 
 
   <nav
