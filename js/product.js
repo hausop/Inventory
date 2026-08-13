@@ -2,8 +2,8 @@ let currentProduct = null;
 let currentPurchases = [];
 let currentInventoryLogs = [];
 
-
 document.addEventListener("DOMContentLoaded", async () => {
+  setupEditProductEvents();
   await loadProductDetail();
 });
 
@@ -12,11 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
  * 取得網址中的商品 ID
  *
  * 例如：
- *
  * product.html?id=09dbd634-b82c-4a2c-b6f0-c3b58341de47
  */
 function getProductId() {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(
+    window.location.search
+  );
 
   return params.get("id");
 }
@@ -26,6 +27,7 @@ function getProductId() {
  * 載入商品詳細資料
  */
 async function loadProductDetail() {
+
   const productId = getProductId();
 
   if (!productId) {
@@ -33,8 +35,8 @@ async function loadProductDetail() {
     return;
   }
 
-
   try {
+
     /*
      * 讀取商品
      */
@@ -130,7 +132,6 @@ async function loadProductDetail() {
       .querySelector("#productContent")
       .classList.remove("hidden");
 
-
   } catch (error) {
 
     console.error(
@@ -142,7 +143,9 @@ async function loadProductDetail() {
       error.message ||
       "無法載入商品資料。"
     );
+
   }
+
 }
 
 
@@ -162,7 +165,8 @@ function renderProductDetail(product) {
 
   document
     .querySelector("#productImage")
-    .alt = product.name || "商品圖片";
+    .alt =
+      product.name || "商品圖片";
 
 
   document
@@ -226,7 +230,6 @@ function renderPurchases(purchases) {
   const count =
     document.querySelector("#purchaseCount");
 
-
   const list =
     document.querySelector("#purchaseList");
 
@@ -252,15 +255,21 @@ function renderPurchases(purchases) {
       .map(purchase => {
 
         const quantity =
-          Number(purchase.purchase_quantity);
+          Number(
+            purchase.purchase_quantity
+          );
 
 
         const total =
-          Number(purchase.purchase_total);
+          Number(
+            purchase.purchase_total
+          );
 
 
         const cost =
-          Number(purchase.cost);
+          Number(
+            purchase.cost
+          );
 
 
         return `
@@ -298,6 +307,7 @@ function renderPurchases(purchases) {
             <div class="record-values">
 
               <div>
+
                 <span class="muted">
                   採購總價
                 </span>
@@ -305,10 +315,12 @@ function renderPurchases(purchases) {
                 <strong>
                   ${formatMoney(total)}
                 </strong>
+
               </div>
 
 
               <div>
+
                 <span class="muted">
                   單位成本
                 </span>
@@ -316,12 +328,14 @@ function renderPurchases(purchases) {
                 <strong>
                   ${formatMoney(cost)}
                 </strong>
+
               </div>
 
             </div>
 
           </article>
         `;
+
       })
       .join("");
 }
@@ -333,11 +347,15 @@ function renderPurchases(purchases) {
 function renderInventoryLogs(logs) {
 
   const count =
-    document.querySelector("#inventoryLogCount");
+    document.querySelector(
+      "#inventoryLogCount"
+    );
 
 
   const list =
-    document.querySelector("#inventoryLogList");
+    document.querySelector(
+      "#inventoryLogList"
+    );
 
 
   count.textContent =
@@ -388,11 +406,13 @@ function renderInventoryLogs(logs) {
 
               <div class="record-title">
 
-                <span class="record-type ${
-                  isIn
-                    ? "record-in"
-                    : "record-out"
-                }">
+                <span
+                  class="record-type ${
+                    isIn
+                      ? "record-in"
+                      : "record-out"
+                  }"
+                >
                   ${typeText}
                 </span>
 
@@ -440,8 +460,434 @@ function renderInventoryLogs(logs) {
 
           </article>
         `;
+
       })
       .join("");
+}
+
+
+/*
+ * ==========================================
+ * 修改商品
+ * ==========================================
+ */
+
+
+/*
+ * 綁定修改商品相關事件
+ */
+function setupEditProductEvents() {
+
+  const editButton =
+    document.querySelector(
+      "#editProductButton"
+    );
+
+
+  const dialog =
+    document.querySelector(
+      "#editProductDialog"
+    );
+
+
+  const closeButton =
+    document.querySelector(
+      "#closeEditProductButton"
+    );
+
+
+  const cancelButton =
+    document.querySelector(
+      "#cancelEditProductButton"
+    );
+
+
+  const form =
+    document.querySelector(
+      "#editProductForm"
+    );
+
+
+  if (
+    !editButton ||
+    !dialog ||
+    !closeButton ||
+    !cancelButton ||
+    !form
+  ) {
+    return;
+  }
+
+
+  /*
+   * 開啟修改視窗
+   */
+  editButton.addEventListener(
+    "click",
+    () => {
+
+      if (!currentProduct) {
+        return;
+      }
+
+
+      fillEditProductForm();
+
+
+      clearEditProductError();
+
+
+      dialog.showModal();
+    }
+  );
+
+
+  /*
+   * 關閉
+   */
+  closeButton.addEventListener(
+    "click",
+    () => {
+      dialog.close();
+    }
+  );
+
+
+  cancelButton.addEventListener(
+    "click",
+    () => {
+      dialog.close();
+    }
+  );
+
+
+  /*
+   * 點擊 dialog 外部關閉
+   */
+  dialog.addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target === dialog
+      ) {
+        dialog.close();
+      }
+
+    }
+  );
+
+
+  /*
+   * 儲存
+   */
+  form.addEventListener(
+    "submit",
+    handleEditProductSubmit
+  );
+}
+
+
+/*
+ * 將目前商品資料填入表單
+ */
+function fillEditProductForm() {
+
+  if (!currentProduct) {
+    return;
+  }
+
+
+  document
+    .querySelector("#editProductName")
+    .value =
+      currentProduct.name || "";
+
+
+  document
+    .querySelector("#editProductCategory")
+    .value =
+      currentProduct.category || "";
+
+
+  document
+    .querySelector("#editProductSubcategory")
+    .value =
+      currentProduct.subcategory || "";
+
+
+  document
+    .querySelector("#editProductUnit")
+    .value =
+      currentProduct.unit || "";
+
+
+  document
+    .querySelector("#editProductTags")
+    .value =
+      normalizeTags(
+        currentProduct.tags
+      ).join(", ");
+
+
+  document
+    .querySelector("#editProductImageUrl")
+    .value =
+      currentProduct.image_url || "";
+}
+
+
+/*
+ * 儲存商品修改
+ */
+async function handleEditProductSubmit(event) {
+
+  event.preventDefault();
+
+
+  if (!currentProduct) {
+    return;
+  }
+
+
+  const saveButton =
+    document.querySelector(
+      "#saveEditProductButton"
+    );
+
+
+  clearEditProductError();
+
+
+  const name =
+    document
+      .querySelector("#editProductName")
+      .value
+      .trim();
+
+
+  const category =
+    document
+      .querySelector("#editProductCategory")
+      .value
+      .trim();
+
+
+  const subcategory =
+    document
+      .querySelector("#editProductSubcategory")
+      .value
+      .trim();
+
+
+  const unit =
+    document
+      .querySelector("#editProductUnit")
+      .value
+      .trim();
+
+
+  const tagsText =
+    document
+      .querySelector("#editProductTags")
+      .value
+      .trim();
+
+
+  const imageUrl =
+    document
+      .querySelector("#editProductImageUrl")
+      .value
+      .trim();
+
+
+  /*
+   * 基本驗證
+   */
+  if (!name) {
+    showEditProductError(
+      "請輸入商品名稱。"
+    );
+    return;
+  }
+
+
+  if (!category) {
+    showEditProductError(
+      "請輸入商品分類。"
+    );
+    return;
+  }
+
+
+  if (!subcategory) {
+    showEditProductError(
+      "請輸入商品細分類。"
+    );
+    return;
+  }
+
+
+  if (!unit) {
+    showEditProductError(
+      "請輸入商品單位。"
+    );
+    return;
+  }
+
+
+  /*
+   * 標籤轉成 PostgreSQL text[]
+   */
+  const tags =
+    tagsText
+      ? tagsText
+          .split(",")
+          .map(tag => tag.trim())
+          .filter(Boolean)
+      : [];
+
+
+  /*
+   * 防止重複送出
+   */
+  saveButton.disabled = true;
+  saveButton.textContent = "儲存中...";
+
+
+  try {
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("products")
+      .update({
+        name,
+        category,
+        subcategory,
+        unit,
+        tags,
+        image_url:
+          imageUrl || null,
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq("id", currentProduct.id)
+      .select("*")
+      .single();
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    if (!data) {
+      throw new Error(
+        "商品更新失敗。"
+      );
+    }
+
+
+    /*
+     * 更新目前商品
+     */
+    currentProduct = data;
+
+
+    /*
+     * 重新顯示商品
+     */
+    renderProductDetail(
+      currentProduct
+    );
+
+
+    /*
+     * 關閉視窗
+     */
+    document
+      .querySelector(
+        "#editProductDialog"
+      )
+      .close();
+
+
+    /*
+     * 提示成功
+     */
+    alert("商品資料已更新。");
+
+
+  } catch (error) {
+
+    console.error(
+      "修改商品失敗：",
+      error
+    );
+
+
+    showEditProductError(
+      error.message ||
+      "商品修改失敗，請稍後再試。"
+    );
+
+  } finally {
+
+    saveButton.disabled = false;
+    saveButton.textContent = "儲存修改";
+
+  }
+
+}
+
+
+/*
+ * 顯示修改錯誤
+ */
+function showEditProductError(
+  message
+) {
+
+  const errorBox =
+    document.querySelector(
+      "#editProductError"
+    );
+
+
+  errorBox.textContent =
+    message;
+
+
+  errorBox.classList.remove(
+    "hidden"
+  );
+}
+
+
+/*
+ * 清除修改錯誤
+ */
+function clearEditProductError() {
+
+  const errorBox =
+    document.querySelector(
+      "#editProductError"
+    );
+
+
+  if (!errorBox) {
+    return;
+  }
+
+
+  errorBox.textContent = "";
+
+
+  errorBox.classList.add(
+    "hidden"
+  );
 }
 
 
@@ -449,10 +895,12 @@ function renderInventoryLogs(logs) {
  * 商品圖片
  */
 function productImage(product) {
+
   return (
     product.image_url ||
     "assets/product-placeholder.svg"
   );
+
 }
 
 
@@ -476,9 +924,6 @@ function normalizeTags(tags) {
  * 日期時間格式
  *
  * 強制使用台灣時區。
- *
- * 即使 Supabase / PostgreSQL 儲存的是 UTC，
- * 顯示時也會轉成 Asia/Taipei。
  */
 function formatDateTime(value) {
 
@@ -491,7 +936,11 @@ function formatDateTime(value) {
     new Date(value);
 
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
     return "—";
   }
 
@@ -511,6 +960,7 @@ function formatDateTime(value) {
       hour12: false
     }
   ).format(date);
+
 }
 
 
@@ -533,6 +983,7 @@ function formatMoney(value) {
       maximumFractionDigits: 2
     }
   ).format(value);
+
 }
 
 
@@ -542,24 +993,33 @@ function formatMoney(value) {
 function showProductError(message) {
 
   document
-    .querySelector("#productLoading")
+    .querySelector(
+      "#productLoading"
+    )
     .classList.add("hidden");
 
 
   document
-    .querySelector("#productContent")
+    .querySelector(
+      "#productContent"
+    )
     .classList.add("hidden");
 
 
   document
-    .querySelector("#productError")
+    .querySelector(
+      "#productError"
+    )
     .classList.remove("hidden");
 
 
   document
-    .querySelector("#productErrorMessage")
+    .querySelector(
+      "#productErrorMessage"
+    )
     .textContent =
       message;
+
 }
 
 
@@ -569,9 +1029,25 @@ function showProductError(message) {
 function escapeHtml(value) {
 
   return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
 }
