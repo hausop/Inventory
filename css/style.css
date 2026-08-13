@@ -358,34 +358,244 @@ h3 { margin: 0; }
 }
 
 
-/* 桌面版修改視窗 */
+/* ==========================================
+   商品編輯視窗
+   ========================================== */
+
 #editProductDialog {
-  width: min(
-    620px,
-    calc(100vw - 32px)
-  );
+  width: min(620px, calc(100vw - 32px));
+  max-width: 620px;
+  max-height: calc(100dvh - 32px);
 
-  max-height:
-    calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
 
-  overflow-y: auto;
+  border: 0;
+  border-radius: 22px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .22);
+
+  overflow: hidden;
+}
+
+/* 背景遮罩 */
+#editProductDialog::backdrop {
+  background: rgba(15, 23, 42, .48);
+  backdrop-filter: blur(5px);
 }
 
 
-/* 手機版 */
+/* ------------------------------------------
+   編輯視窗標題區
+   ------------------------------------------ */
+
+#editProductDialog .dialog-header {
+  padding: 24px 26px 18px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+#editProductDialog .dialog-header h2 {
+  margin: 4px 0 0;
+
+  font-size: 1.35rem;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+#editProductDialog .dialog-header .eyebrow {
+  margin-bottom: 4px;
+}
+
+
+/* ------------------------------------------
+   編輯表單
+   ------------------------------------------ */
+
+#editProductDialog .edit-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  padding: 24px 26px 26px;
+}
+
+#editProductDialog .edit-product-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  color: var(--text);
+  font-size: .9rem;
+  font-weight: 650;
+}
+
+
+/* ------------------------------------------
+   輸入欄位
+   ------------------------------------------ */
+
+#editProductDialog .edit-product-form input {
+  width: 100%;
+  min-height: 48px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  font: inherit;
+
+  outline: none;
+
+  transition:
+    border-color .15s ease,
+    box-shadow .15s ease,
+    background-color .15s ease;
+}
+
+#editProductDialog .edit-product-form input:hover {
+  border-color: #c5ccd7;
+}
+
+#editProductDialog .edit-product-form input:focus {
+  border-color: #9bb7f5;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, .10);
+}
+
+
+/* ------------------------------------------
+   雙欄欄位
+   ------------------------------------------ */
+
+#editProductDialog .form-grid-2 {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+
+/* ------------------------------------------
+   提示文字
+   ------------------------------------------ */
+
+#editProductDialog .form-hint {
+  margin-top: -2px;
+
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+
+/* ------------------------------------------
+   錯誤訊息
+   ------------------------------------------ */
+
+#editProductDialog .form-error {
+  margin: 0;
+
+  padding: 11px 13px;
+
+  border-radius: 10px;
+
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+
+  color: #b91c1c;
+
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
+
+/* ------------------------------------------
+   表單底部操作列
+   ------------------------------------------ */
+
+#editProductDialog .form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 4px;
+  padding-top: 18px;
+
+  border-top: 1px solid var(--border);
+}
+
+#editProductDialog .form-actions button {
+  min-width: 88px;
+}
+
+
+/* ------------------------------------------
+   關閉按鈕
+   ------------------------------------------ */
+
+#editProductDialog .dialog-header .icon-button {
+  flex: 0 0 auto;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+}
+
+
+/* ==========================================
+   商品編輯視窗｜手機版
+   ========================================== */
+
 @media (max-width: 700px) {
 
-  .form-grid-2 {
+  #editProductDialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+
+    border-radius: 18px;
+  }
+
+  #editProductDialog .dialog-header {
+    padding: 20px 20px 16px;
+  }
+
+  #editProductDialog .edit-product-form {
+    gap: 16px;
+    padding: 20px;
+  }
+
+  #editProductDialog .form-grid-2 {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-
-  .form-actions {
+  #editProductDialog .form-actions {
     flex-direction: column-reverse;
+    align-items: stretch;
   }
 
-
-  .form-actions button {
+  #editProductDialog .form-actions button {
     width: 100%;
   }
 
